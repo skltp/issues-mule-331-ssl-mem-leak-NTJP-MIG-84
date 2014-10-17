@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mule-configuration xmlns="http://www.mulesoft.com/tooling/messageflow" name="ntjp_mig-84_ssl-mem-leak">
+    <global-element name="HTTP\HTTPS" type="org.mule.tooling.ui.modules.core.global.httpsConnector" entity-id="HTTP\HTTPS#1">
+        <properties>
+            <property name="ENABLE_MODE_SWITCH"/>
+            <property name="keepAlive"/>
+            <property name="socketSoLinger" value="0"/>
+            <property name="proxyUsername"/>
+            <property name="dispatcherPoolFactory-ref"/>
+            <property name="sendTcpNoDelay" value="true"/>
+            <property name="sendBufferSize"/>
+            <property name="proxyPassword"/>
+            <property name="validateConnections"/>
+            <property name="label"/>
+            <property name="reuseAddress"/>
+            <property name="cookieSpec"/>
+            <property name="auxiliary;index" value="1"/>
+            <property name="receiveBacklog"/>
+            <property name="keepSendSocketOpen"/>
+            <property name="proxyPort"/>
+            <property name="dynamicNotification"/>
+            <property name="receiveBufferSize"/>
+            <property name="enableCookies"/>
+            <property name="serverSoTimeout"/>
+            <property name="name" value="VPProducerConnector"/>
+            <property name="proxyHostname"/>
+            <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/https/connector"/>
+            <property name="clientSoTimeout"/>
+            <property-collection name="@http://www.mulesoft.org/schema/mule/https/tls-key-store;0">
+                <property name="storePassword" value="password"/>
+                <property name="path" value="${mule.home}/conf/certs/tp.jks"/>
+                <property name="keyPassword" value="password"/>
+                <property name="auxiliary;wrapIn" value="5"/>
+                <property name="class" value="jks"/>
+                <property name="auxiliary;index" value="5"/>
+            </property-collection>
+            <property-collection name="@http://www.mulesoft.org/schema/mule/https/tls-server;0">
+                <property name="storePassword" value="password"/>
+                <property name="path" value="${mule.home}/conf/certs/truststore.jks"/>
+                <property name="requireClientAuthentication" value="true"/>
+                <property name="auxiliary;wrapIn" value="6"/>
+                <property name="class" value="jks"/>
+                <property name="auxiliary;index" value="6"/>
+            </property-collection>
+            <property-collection name="@http://www.springframework.org/schema/beans/property;0">
+                <property name="name" value="keepAlive"/>
+                <property name="auxiliary;wrapIn" value="2"/>
+                <property name="value" value="true"/>
+                <property name="auxiliary;index" value="2"/>
+            </property-collection>
+            <property-collection name="@http://www.springframework.org/schema/beans/property;1">
+                <property name="name" value="keepAliveTimeout"/>
+                <property name="auxiliary;wrapIn" value="3"/>
+                <property name="value" value="70000"/>
+                <property name="auxiliary;index" value="3"/>
+            </property-collection>
+        </properties>
+    </global-element>
+    <flow SubFlow="false" name="ntjp_mig-84_ssl-mem-leakFlow1" type="http://www.mulesoft.org/schema/mule/core/flow" entity-id="cce9fe8c-381a-4f28-b7bf-76578500f168">
+        <properties>
+            <property name="initialState"/>
+            <property name="processingStrategy2"/>
+            <property name="processingStrategy"/>
+            <property name="bussinessEventsLabel"/>
+            <property name="tracking:enable-default-events"/>
+            <property name="auxiliary;index" value="7"/>
+        </properties>
+        <lane hadOnlyOneElement="false" index="0" isChoiceOtherwiseLane="false" entity-id="compartment-lane#1">
+            <graphicalData x="0" y="0" width="0" height="0"/>
+            <endpoint direction="Inbound" message-exchange-pattern="RequestResponse" name="HTTP" type="http://www.mulesoft.org/schema/mule/http/endpoint" entity-id="HTTP#1">
+                <graphicalData x="0" y="0" width="0" height="0"/>
+                <properties>
+                    <property name="mimeType"/>
+                    <property name="path"/>
+                    <property name="responseTransformer-refs"/>
+                    <property name="exchange-pattern" value="request-response"/>
+                    <property name="tracking:enable-default-events"/>
+                    <property name="ref"/>
+                    <property name="password"/>
+                    <property name="keep-alive"/>
+                    <property name="followRedirects"/>
+                    <property name="host"/>
+                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/https/endpoint"/>
+                    <property name="businessEventsLabel"/>
+                    <property name="contentType"/>
+                    <property name="responseTimeout"/>
+                    <property name="connector-ref" value="VPProducerConnector"/>
+                    <property name="address" value="https://localhost:20000"/>
+                    <property name="method"/>
+                    <property name="encoding"/>
+                    <property name="httpLabel"/>
+                    <property name="disableTransportTransformer"/>
+                    <property name="auxiliary;index" value="8"/>
+                    <property name="connector-ref-outbound" value="VPProducerConnector"/>
+                    <property name="port"/>
+                    <property name="transformer-refs"/>
+                    <property name="user"/>
+                </properties>
+            </endpoint>
+            <pattern name="Script" type="http://www.mulesoft.org/schema/mule/scripting/groovyComponent" entity-id="Groovy#1">
+                <graphicalData x="0" y="0" width="0" height="0"/>
+                <properties>
+                    <property name="script-ref"/>
+                    <property name="auxiliary;index" value="9"/>
+                    <property-collection name="@http://www.mulesoft.org/schema/mule/scripting/script-for-properties;0">
+                        <property name="engine" value="Groovy"/>
+                        <property name="text" value="&quot;invoked service with: &quot; + message.getPayload()"/>
+                        <property name="auxiliary;wrapIn" value="10"/>
+                        <property name="auxiliary;index" value="10"/>
+                    </property-collection>
+                    <property-collection name="@http://www.mulesoft.org/schema/mule/scripting/script;0">
+                        <property name="engine" value="Groovy"/>
+                        <property name="text" value="&quot;invoked service with: &quot; + message.getPayload()"/>
+                        <property name="auxiliary;wrapIn" value="10"/>
+                        <property name="auxiliary;index" value="10"/>
+                    </property-collection>
+                </properties>
+            </pattern>
+        </lane>
+    </flow>
+</mule-configuration>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:https="http://www.mulesoft.org/schema/mule/https" xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.4.1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+http://www.mulesoft.org/schema/mule/https http://www.mulesoft.org/schema/mule/https/current/mule-https.xsd">
+
+
+    <!--
+    Settings from NTjP/VP PROD on 2014-04-25.
+    -->
+    <https:connector name="VPProducerConnector" socketSoLinger="0" sendTcpNoDelay="true">
+    	<spring:property name="keepAlive" value="true"/>
+    	<spring:property name="keepAliveTimeout" value="70000"/>
+    	<service-overrides sessionHandler="org.mule.session.NullSessionHandler" />
+    	<!-- ${mule.home}/conf/ -->
+    	<https:tls-key-store class="jks" path="${mule.home}/conf/certs/tp.jks" storePassword="password" keyPassword="password"/>
+    	<https:tls-server class="jks" path="${mule.home}/conf/certs/truststore.jks" storePassword="password" requireClientAuthentication="true"/>
+	</https:connector>
+
+
+    <flow name="ntjp_mig-84_ssl-mem-leakFlow1" doc:name="ntjp_mig-84_ssl-mem-leakFlow1">
+        <https:inbound-endpoint
+        	address="https://localhost:20000"
+        	exchange-pattern="request-response"
+        	connector-ref="VPProducerConnector"/>
+        	
+        <scripting:component doc:name="Script">
+            <scripting:script engine="Groovy"><![CDATA["invoked service with: " + message.getPayload()]]></scripting:script>
+        </scripting:component>
+    </flow>
+</mule>
